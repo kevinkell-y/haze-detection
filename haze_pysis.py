@@ -13,15 +13,16 @@
 #
 #
 #===============================================================================
-from pysis.isis import junocam2isis, spiceinit
+from pysis.isis import junocam2isis, spiceinit, campt
 from pysis.util import file_variations
 
 # Here we will call the image name from the original JunoCamImageProcessing.py file
 
-# Test IMG from PJ14
+# Test IMG & Framelet from PJ14
 img_name = 'JNCR_2018197_14C00024_V01'
-
-
+framelet = 'JNCR_2018197_14C00024_V01_BLUE_0008.cub'
+framelet_csv = 'JNCR_2018197_14C00024_V01_BLUE_0008_campt.csv'
+haze_points = 'haze_points.csv'
 
 
 # First
@@ -39,10 +40,13 @@ def junocam_framelets(img_name):
     (cub_name, label_name) = file_variations(img_name, ['.cub', '.LBL'])
 
     junocam2isis(from_=label_name, to=cub_name)
-    spiceinit(from_=cub_name)
+    print("Checkpoint 1: Inside Function 1")
 
 
 junocam_framelets(img_name)
+print("Checkpoint 2: Outside Function 1")
+
+
 
 # Second
 #===============================================================================
@@ -53,17 +57,38 @@ junocam_framelets(img_name)
 #   $ spiceinit from=JNCR_2021052_32C00023_V01_RED_0015.cub
 #   $ spiceinit from=JNCR_2021052_32C00023_V01_GREEN_0015.cub
 #
-#   If you want to process multiple images in tandem, use parallel:
+#   To process multiple images in tandem, use ISIS3's "parallel" program:
 #   $ parallel spiceinit from=YOUR_IMAGE_{1}_{2}.cub ::: {RED,GREEN,BLUE} ::: {0001..0032}
 #
 #===============================================================================
 
+def spice_data(framelet):
+
+    spiceinit(from_=framelet)
+    print("Checkpoint 3: Inside Function 2")
 
 
-#     9. Run the campt program in ISIS to get SlantDistance, PlanetocentricLatitude, PositiveWestLongitude
-# 	Ex:
-# 	campt from=image.cub coordlist=coords.csv format=flat to=output_table.csv
+spice_data(framelet)
+print("Checkpoint 4: Outside Function 2")
+
+
+
+# Third
+#===============================================================================
 #
-# NB: You must manually edit the haze_point.csv file exported from Daniel Wen’s code. You must delete the the first row (because it contains text) and you must delete the middle “buffer” column between the two columns (there can be no empty columns between each column) Once edited, proceed:
+#   Run the campt program in ISIS to get the spacecraft's ancillary data for
+#   latitude, longitude, and slant distance, for every pixel along the polyline
 #
-# campt from=JNCR_2021052_32C00023_V01_RED_0015.cub  coordtype=Image coordlist=haze_points.csv format=flat to=JNCR_2021052_32C00023_V01_RED_15_campt.csv
+#===============================================================================
+
+def isis_processing(framelet, framelet_csv, haze_points):
+
+#    (cub_name, csv_name) = file_variations(framelet, ['.cub', '.csv'])
+    campt(from_=framelet, to=framelet_csv, coordtype='Image', coordlist=haze_points, format='flat')
+    print("Checkpoint5: Inside Function 3")
+
+
+
+
+isis_processing(framelet, framelet_csv, haze_points)
+print("Checkpoint6: Outside Function 3")
