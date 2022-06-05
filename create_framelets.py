@@ -1,6 +1,6 @@
 #=================================================================
 #
-# Divides a raw image into its indivudal framelets
+# Divides a raw image into its individual framelets
 # Modularized component from NASA JPL's JunoCamImageProcessing_v2.py script
 #
 #=================================================================
