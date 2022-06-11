@@ -30,11 +30,14 @@ def create_raw_image(filename):
         pixels[i] = pixels[i] * 256 / (max_pixel_val + 1)
     width = 1648
     height = int(len(pixels) / width)
-    raw_framelet = Image.new("RGB", (width, height))
-    raw_framelet_pixels = raw_framelet.load()
+    
+    # NB: This RAW_image is a local variable for creating RAW images
+    # and not to be confused with the global variable: raw_image
+    RAW_image = Image.new("RGB", (width, height))
+    RAW_image_pixels = RAW_image.load()
     for i in range(len(pixels)):
-        raw_framelet_pixels[i % width, int(i / width)] = (int(pixels[i]), int(pixels[i]), int(pixels[i]))
-    return raw_framelet
+        RAW_image_pixels[i % width, int(i / width)] = (int(pixels[i]), int(pixels[i]), int(pixels[i]))
+    return RAW_image
 
 
 # raw = create_raw_image(filename)
