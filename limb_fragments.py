@@ -14,18 +14,13 @@ def main():
     framelet_pixels = framelet.load()
     limb_endpoints = trace_limb_polyline(framelet, raw_image) # list of indices of the endpoints of the limb polyline
 
-    img = mpimg.imread('framelet2(4)_blue.png')
-    imgplot = plt.imshow(img, cmap='gray')
-
     points = np.array(limb_endpoints)
     x, y = points.T
 
-    #ax = plt.gca()
-    #ax.invert_yaxis()
     for x,y in limb_endpoints:
-        framelet_pixels[x, y] = (255, 0, 0)
+        framelet_pixels[x, y] = (255, 0, 0) # Label each pixel containing limb fragment bright red
 
-    # displays the raw framelet with limb fragments labeled in bright red
+    # displays the raw framelet with limb fragments
     framelet.show()
 
     #plt.title("Limb Endpoints")
